@@ -56,7 +56,7 @@ class AutoMount():
 		for nfs in tree.findall("nfs"):
 			for mount in nfs.findall("mount"):
 				data = { 'isMounted': False, 'active': False, 'ip': False, 'sharename': False, 'sharedir': False, 'username': False, \
-							'password': False, 'mounttype' : False, 'options' : False, 'hdd_replacement' : False }
+							'password': False, 'mounttype' : False, 'buftype' : False, 'options' : False, 'hdd_replacement' : False }
 				try:
 					data['mounttype'] = 'nfs'.encode("UTF-8")
 					data['active'] = getValue(mount.findall("active"), False).encode("UTF-8")
@@ -67,6 +67,7 @@ class AutoMount():
 					data['sharedir'] = getValue(mount.findall("sharedir"), "/exports/").encode("UTF-8")
 					data['sharename'] = getValue(mount.findall("sharename"), "MEDIA").encode("UTF-8")
 					data['options'] = getValue(mount.findall("options"), "rw,nolock,tcp").encode("UTF-8")
+					data['buftype'] = getValue(mount.findall("buftype"), "2048").encode("UTF-8")					
 					self.automounts[data['sharename']] = data
 				except Exception, e:
 					print "[MountManager] Error reading Mounts:", e
@@ -74,7 +75,7 @@ class AutoMount():
 		for nfs in tree.findall("cifs"):
 			for mount in nfs.findall("mount"):
 				data = { 'isMounted': False, 'active': False, 'ip': False, 'sharename': False, 'sharedir': False, 'username': False, \
-							'password': False, 'mounttype' : False, 'options' : False, 'hdd_replacement' : False }
+							'password': False, 'mounttype' : False, 'buftype' : False, 'options' : False, 'hdd_replacement' : False }
 				try:
 					data['mounttype'] = 'cifs'.encode("UTF-8")
 					data['active'] = getValue(mount.findall("active"), False).encode("UTF-8")
@@ -87,6 +88,7 @@ class AutoMount():
 					data['options'] = getValue(mount.findall("options"), "rw,nolock").encode("UTF-8")
 					data['username'] = getValue(mount.findall("username"), "guest").encode("UTF-8")
 					data['password'] = getValue(mount.findall("password"), "").encode("UTF-8")
+					data['buftype'] = getValue(mount.findall("buftype"), "4096").encode("UTF-8")
 					self.automounts[data['sharename']] = data
 				except Exception, e:
 					print "[MountManager] Error reading Mounts:", e
@@ -140,13 +142,19 @@ class AutoMount():
 								options = "tcp,noatime," + data['options']
 							else:
 								options = "tcp,noatime"
-							tmpcmd = "mount -t nfs -o %s '%s' '%s'" % (options, data['ip'] + ':/' + data['sharedir'], path)
+							if data['buftype'] == 'MAX':
+								tmpcmd = "mount -t nfs -o %s '%s' '%s'" % (options, data['ip'] + ':/' + data['sharedir'], path)
+							else:
+								tmpcmd = 'mount -t nfs -o tcp,'+ data['options'] +',rsize='+ data['buftype'] + ',wsize='+ data['buftype'] + ' ' + data['ip'] + ':/' + data['sharedir'] + ' ' + path
 							command = tmpcmd.encode("UTF-8")
 
 					elif data['mounttype'] == 'cifs':
 						if not os.path.ismount(path):
 							tmpusername = data['username'].replace(" ", "\\ ")
-							options = data['options'] + ',noatime,noserverino,iocharset=utf8,username='+ tmpusername + ',password='+ data['password']
+							if data['buftype'] == 'MAX':
+								options = data['options'] + ',noatime,noserverino,iocharset=utf8,username='+ tmpusername + ',password='+ data['password']
+							else:
+								options = data['options'] + ',noatime,noserverino,iocharset=utf8,rsize='+ data['buftype'] + ',wsize='+ data['buftype'] +',username='+ tmpusername + ',password='+ data['password']
 							tmpcmd = "mount -t cifs -o %s '//%s/%s' '%s'" % (options, data['ip'], data['sharedir'], path)
 							command = tmpcmd.encode("UTF-8")
 				except Exception, ex:
@@ -244,6 +252,7 @@ class AutoMount():
 			list.append("  <sharename>" + sharedata['sharename'] + "</sharename>\n")
 			list.append("  <sharedir>" + sharedata['sharedir'] + "</sharedir>\n")
 			list.append("  <options>" + sharedata['options'] + "</options>\n")
+			list.append("  <buftype>" + sharedata['buftype'] + "</buftype>\n")
 
 			if sharedata['mounttype'] == 'cifs':
 				list.append("  <username>" + sharedata['username'] + "</username>\n")

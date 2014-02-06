@@ -34,7 +34,7 @@ class AutoMountEdit(Screen, ConfigListScreen):
                 self.mountinfo = mountinfo
                 if self.mountinfo is None:
                         #Initialize blank mount enty
-                        self.mountinfo = { 'isMounted': False, 'active': False, 'ip': False, 'sharename': False, 'sharedir': False, 'username': False, 'password': False, 'mounttype' : False, 'options' : False, 'hdd_replacement' : False }
+                        self.mountinfo = { 'isMounted': False, 'active': False, 'ip': False, 'sharename': False, 'sharedir': False, 'username': False, 'password': False, 'mounttype' : False, 'buftype' : False, 'options' : False, 'hdd_replacement' : False }
 
                 self.applyConfigRef = None
                 self.updateConfigRef = None
@@ -92,7 +92,16 @@ class AutoMountEdit(Screen, ConfigListScreen):
                 self.usernameEntry = None
                 self.passwordEntry = None
                 self.hdd_replacementEntry = None
+                self.buftypeEntry = None
                 self.sharetypelist = [("nfs", _("NFS share")), ("cifs", _("CIFS share"))]
+
+                self.buftypelist = []
+                self.buftypelist.append(("2048", _("2048")))
+                self.buftypelist.append(("4096", _("4096")))
+                self.buftypelist.append(("8192", _("8192")))
+                self.buftypelist.append(("16384", _("16384")))
+                self.buftypelist.append(("32768", _("32768")))
+                self.buftypelist.append(("MAX", _("MAX")))
 
                 if self.mountinfo.has_key('mounttype'):
                         mounttype = self.mountinfo['mounttype']
@@ -149,13 +158,21 @@ class AutoMountEdit(Screen, ConfigListScreen):
                 if sharedir is False:
                         sharedir = "/export/hdd"
                 if mounttype == "nfs":
-                        defaultOptions = "rw,nolock,soft"
+                        defaultOptions = "rw,nolock,nfsvers=3,vers=3"
                 else:
                         defaultOptions = "rw"
                 if username is False:
                         username = ""
                 if password is False:
                         password = ""
+
+                if self.mountinfo.has_key('buftype'):
+                        buftype = self.mountinfo['buftype']
+		else:
+			buftype = "4096" #"8192"
+		if buftype is False:
+			buftype = "4096" #"8192"
+
 
                 self.activeConfigEntry = NoSave(ConfigEnableDisable(default = active))
                 self.ipConfigEntry = NoSave(ConfigIP(default = ip))
@@ -167,6 +184,7 @@ class AutoMountEdit(Screen, ConfigListScreen):
                 self.usernameConfigEntry = NoSave(ConfigText(default = username, visible_width = 50, fixed_size = False))
                 self.passwordConfigEntry = NoSave(ConfigPassword(default = password, visible_width = 50, fixed_size = False))
                 self.mounttypeConfigEntry = NoSave(ConfigSelection(self.sharetypelist, default = mounttype ))
+                self.buftypeConfigEntry = NoSave(ConfigSelection(self.buftypelist, default = buftype ))
                 self.hdd_replacementConfigEntry = NoSave(ConfigYesNo(default = hdd_replacement))
 
         def createSetup(self):
@@ -183,11 +201,15 @@ class AutoMountEdit(Screen, ConfigListScreen):
                 self.list.append(self.sharedirEntry)
                 self.hdd_replacementEntry = getConfigListEntry(_("use as HDD replacement"), self.hdd_replacementConfigEntry)
                 self.list.append(self.hdd_replacementEntry)
+
+                self.buftypeEntry = getConfigListEntry(_("Bufor wsize and rsize"), self.buftypeConfigEntry)
+                self.list.append(self.buftypeEntry)
+
                 if self.optionsConfigEntry.value == self.optionsConfigEntry.default:
                         if self.mounttypeConfigEntry.value == "cifs":
                                 self.optionsConfigEntry = NoSave(ConfigText(default = "rw", visible_width = 50, fixed_size = False))
                         else:
-                                self.optionsConfigEntry = NoSave(ConfigText(default = "rw,nolock,soft", visible_width = 50, fixed_size = False))
+                                self.optionsConfigEntry = NoSave(ConfigText(default = "rw,nolock,nfsvers=3,vers=3", visible_width = 50, fixed_size = False))
                 self.optionsEntry = getConfigListEntry(_("Mount options"), self.optionsConfigEntry)
                 self.list.append(self.optionsEntry)
                 if self.mounttypeConfigEntry.value == "cifs":
@@ -245,7 +267,7 @@ class AutoMountEdit(Screen, ConfigListScreen):
 
         def selectionChanged(self):
                 current = self["config"].getCurrent()
-                if current == self.activeEntry or current == self.ipEntry or current == self.mounttypeEntry or current == self.hdd_replacementEntry:
+                if current == self.activeEntry or current == self.ipEntry or current == self.mounttypeEntry or current == self.hdd_replacementEntry or current == self.buftypeEntry:
                         self["VKeyIcon"].hide()
                         self["VirtualKB"].setEnabled(False)
                 else:
@@ -279,6 +301,7 @@ class AutoMountEdit(Screen, ConfigListScreen):
                         iAutoMount.setMountsAttribute(self.sharenameConfigEntry.value, "ip", self.ipConfigEntry.getText())
                         iAutoMount.setMountsAttribute(self.sharenameConfigEntry.value, "sharedir", sharedir)
                         iAutoMount.setMountsAttribute(self.sharenameConfigEntry.value, "mounttype", self.mounttypeConfigEntry.value)
+                        iAutoMount.setMountsAttribute(self.sharenameConfigEntry.value, "buftype", self.buftypeConfigEntry.value)
                         iAutoMount.setMountsAttribute(self.sharenameConfigEntry.value, "options", self.optionsConfigEntry.value)
                         iAutoMount.setMountsAttribute(self.sharenameConfigEntry.value, "username", self.usernameConfigEntry.value)
                         iAutoMount.setMountsAttribute(self.sharenameConfigEntry.value, "password", self.passwordConfigEntry.value)
@@ -307,7 +330,7 @@ class AutoMountEdit(Screen, ConfigListScreen):
         def applyConfig(self, ret = False):
                 if (ret == True):
                         data = { 'isMounted': False, 'active': False, 'ip': False, 'sharename': False, 'sharedir': False, \
-                                        'username': False, 'password': False, 'mounttype' : False, 'options' : False, 'hdd_replacement' : False }
+                                        'username': False, 'password': False, 'mounttype' : False,'buftype' : False, 'options' : False, 'hdd_replacement' : False }
                         data['active'] = self.activeConfigEntry.value
                         data['ip'] = self.ipConfigEntry.getText()
                         data['sharename'] = re_sub("\W", "", self.sharenameConfigEntry.value)
@@ -318,6 +341,7 @@ class AutoMountEdit(Screen, ConfigListScreen):
                                 data['sharedir'] = self.sharedirConfigEntry.value
                         data['options'] =  self.optionsConfigEntry.value
                         data['mounttype'] = self.mounttypeConfigEntry.value
+                        data['buftype'] = self.buftypeConfigEntry.value
                         data['username'] = self.usernameConfigEntry.value
                         data['password'] = self.passwordConfigEntry.value
                         data['hdd_replacement'] = self.hdd_replacementConfigEntry.value
