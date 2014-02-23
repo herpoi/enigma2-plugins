@@ -2,102 +2,70 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2010-02-05 19:05+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Dr. Best <dr.best@dreambox-tools.info>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: plugin.py:67
+#: ../src/plugin.py:48
 msgid "as plugin in extended bar"
 msgstr ""
 
-#: plugin.py:67
+#: ../src/plugin.py:48
 msgid "with long OK press"
 msgstr ""
 
-#: plugin.py:67
+#: ../src/plugin.py:48
 msgid "with exit button"
 msgstr ""
 
-#: plugin.py:135
-msgid "Could not open Picture in Picture"
-msgstr ""
-
-#: plugin.py:146
+#: ../src/plugin.py:106
 msgid "Virtual Zap Setup"
 msgstr ""
 
-#: plugin.py:148
+#: ../src/plugin.py:108
+#: ../src/plugin.py:112
 msgid "Virtual (PiP) Zap"
 msgstr ""
 
-#: plugin.py:746
-msgid "Directory browser"
-msgstr ""
-
-#: plugin.py:747 plugin.py:812
+#: ../src/plugin.py:413
 msgid "Cancel"
 msgstr ""
 
-#: plugin.py:748
-msgid "Save"
-msgstr ""
-
-#: plugin.py:749 plugin.py:785
-#, python-format
-msgid "current:  %s"
-msgstr ""
-
-#: plugin.py:813
+#: ../src/plugin.py:414
 msgid "OK"
 msgstr ""
 
-#: plugin.py:815
+#: ../src/plugin.py:416
 msgid "Usage"
 msgstr ""
 
-#: plugin.py:817
+#: ../src/plugin.py:598
 msgid "Use PiP"
 msgstr ""
 
-#: plugin.py:818
+#: ../src/plugin.py:599
 msgid "Show PiP in Infobar"
 msgstr ""
 
-#: plugin.py:819
+#: ../src/plugin.py:622
 msgid "Start standard PiP after x secs (0 = disabled)"
 msgstr ""
 
-#: plugin.py:820
-msgid "Show picons"
-msgstr ""
-
-#: plugin.py:821
-msgid "Picon path"
-msgstr ""
-
-#: plugin.py:822
+#: ../src/plugin.py:623
 msgid "Remember last service"
 msgstr ""
 
-#: plugin.py:846
+#: ../src/plugin.py:430
 msgid ""
 "GUI needs a restart to apply the new settings.\n"
 "Do you want to Restart the GUI now?"
 msgstr ""
 
-#: plugin.py:847
+#: ../src/plugin.py:431
 msgid "Restart GUI now?"
 msgstr ""
 
-msgid "with Left & Right buttons"
-msgstr ""
-
-msgid "with Up & Down buttons"
-msgstr ""
-
-msgid "No EPG data"
-msgstr ""
