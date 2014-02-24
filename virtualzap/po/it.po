@@ -25,7 +25,7 @@ msgid "with long OK press"
 msgstr "con pressione lunga tasto Ok"
 
 #: /home/dario/Plugins/virtualzap/src/plugin.py:55
-msgid "with exit button"
+msgid "with Exit button"
 msgstr "con il tasto exit"
 
 #: /home/dario/Plugins/virtualzap/src/plugin.py:121

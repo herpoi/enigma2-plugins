@@ -19,7 +19,7 @@ msgid "with long OK press"
 msgstr "mit langen Druck auf \"OK\""
 
 #: #: ../src/plugin.py:48
-msgid "with exit button"
+msgid "with Exit button"
 msgstr "mit \"Exit\" auf Fernbedienung"
 
 #: ../src/plugin.py:106
