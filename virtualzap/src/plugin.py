@@ -78,7 +78,7 @@ config.plugins.virtualzap.curref = ConfigText()
 config.plugins.virtualzap.curbouquet = ConfigText()
 config.plugins.virtualzap.exittimer =  ConfigInteger(0,limits = (0, 20))
 
-if config.plugins.virtualzap.mode.value == "0" or config.plugins.virtualzap.mode.value == "1":
+if config.plugins.virtualzap.mode.value == "0" or config.plugins.virtualzap.mode.value == "1" or config.plugins.virtualzap.mode.value == "2":
 	def autostart(reason, **kwargs):
 		if config.plugins.virtualzap.mode.value != "0":
 			# overide InfoBarShowHide
