@@ -169,7 +169,7 @@ class AutoMountEdit(Screen, ConfigListScreen):
                 if self.mountinfo.has_key('buftype'):
                         buftype = self.mountinfo['buftype']
 		else:
-			buftype = "4096" #"8192"
+			buftype = "MAX" #"8192"
 		if buftype is False:
 			buftype = "MAX" #"8192"
 
