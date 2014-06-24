@@ -88,7 +88,7 @@ class AutoMount():
 					data['options'] = getValue(mount.findall("options"), "rw,nolock").encode("UTF-8")
 					data['username'] = getValue(mount.findall("username"), "guest").encode("UTF-8")
 					data['password'] = getValue(mount.findall("password"), "").encode("UTF-8")
-					data['buftype'] = getValue(mount.findall("buftype"), "4096").encode("UTF-8")
+					data['buftype'] = getValue(mount.findall("buftype"), "MAX").encode("UTF-8")
 					self.automounts[data['sharename']] = data
 				except Exception, e:
 					print "[MountManager] Error reading Mounts:", e

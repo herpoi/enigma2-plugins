@@ -171,7 +171,7 @@ class AutoMountEdit(Screen, ConfigListScreen):
 		else:
 			buftype = "4096" #"8192"
 		if buftype is False:
-			buftype = "4096" #"8192"
+			buftype = "MAX" #"8192"
 
 
                 self.activeConfigEntry = NoSave(ConfigEnableDisable(default = active))
